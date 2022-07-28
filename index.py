@@ -11,6 +11,7 @@ corp_id = '' #企业微信ID
 corp_secret = '' #企业微信机器人密钥
 agent_id = '' #企业微信机器人ID
 personToken = '' #北京通打开小程序时认证URL中的personToken
+remindDay = 3  #达到指定x天数后发送通知
 
 #获取当前时间
 client = ntplib.NTPClient()
@@ -57,7 +58,7 @@ else:
     exit()
 
 #发送微信企业消息
-if(hsDay>=3):
+if(hsDay>=remindDay): 
     def get_access_token(corp_id, corp_secret):
         resp = requests.get(f'https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={corp_id}&corpsecret={corp_secret}')
         js = json.loads(resp.text)
@@ -69,7 +70,7 @@ if(hsDay>=3):
 
     def wechat_push_text(agent_id, access_token, message):
         data = {
-            "touser": "qy01e335e7bbc976002a8aa93f6c",
+            "touser": "",  #指定接收消息的企业微信成员ID
             "msgtype": 'text',
             "agentid": agent_id,
             "text": {
@@ -88,3 +89,6 @@ if(hsDay>=3):
 
     access_token, expires_in = get_access_token(corp_id, corp_secret)
     wechat_push_text(agent_id=agent_id, access_token=access_token, message=push)
+
+else:
+return ("It's only "+str(hsDay)+" day(s) passed.") #不满足天数时直接输出提醒，不通知。
