@@ -18,11 +18,11 @@
 
 2. 在手机端登录北京通App，打开北京健康宝小程序。
 
-3. 读取PC端抓包软件中路径为/renzheng/open/auth/authorize开头的请求，检查请求URL参数中的personToken字段，复制字段值，如下图。
+3. 读取PC端抓包软件中路径为`/renzheng/open/auth/authorize`开头的请求，检查请求URL参数中的`personToken`字段，复制字段值，如下图。
 
     ![抓包软件与位置截图](https://github.com/WA-YI/Health-Kit-Reminder/blob/Additional/ScreenShot-2022-07-28-230515.png?raw=true)
 
-4. 将复制出来的字段粘贴至`index.py`第13行的personToken字段中即可。
+4. 将复制出来的字段粘贴至`index.py`第13行的`personToken`字段中即可。
 
 ## 2. 通知配置
 
