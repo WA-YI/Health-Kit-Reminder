@@ -3,14 +3,13 @@ import time
 import ntplib
 import requests
 from urllib import parse
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 #全局变量按需修改
 corp_id = '' #企业微信ID
 corp_secret = '' #企业微信机器人密钥
 agent_id = '' #企业微信机器人ID
 personToken = '' #北京通打开小程序时认证URL中的personToken
-remindDay = 3  #达到指定x天数后发送通知
 
 #获取当前时间
 client = ntplib.NTPClient()
@@ -49,20 +48,15 @@ hsReqJson = {"refresh":0,"selectType":1}
 hsReq = requests.post(urlHS,data=json.dumps(hsReqJson),headers={'Content-Type':'application/json','sessionId':session})
 if(hsReq.status_code == 200):
     hsJson = json.loads(hsReq.text)
-    lastHs = hsJson['data']['detTime']
-    lastHs = datetime.strptime(lastHs,'%Y-%m-%d %H:%M:%S')
-    lastHour = lastHs.hour
-    hsDay = (now.date()-lastHs.date()).days
-    if(lastHour<6):
-        hsDay += 1
+    lastHs = datetime.strptime(hsJson['data']['detTime'],'%Y-%m-%d %H:%M:%S')
+    loc = hsJson['data']['detName']
 else:
     print("请求核酸结果失败!")
     exit()
 
 #发送微信企业消息
-if(hsDay>=remindDay): 
-    push = '已经'+str(hsDay)+'天没做核酸了' #企业微信PUSH文本
-
+if((now.date()-lastHs.date()).days==1) and (0<(now-lastHs).seconds<3600):
+    push = '/咖啡生命值已回满！\n--------\n时间：'+str(lastHs)+'\n地点：'+loc
     def get_access_token(corp_id, corp_secret):
         resp = requests.get(f'https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={corp_id}&corpsecret={corp_secret}')
         js = json.loads(resp.text)
@@ -95,4 +89,4 @@ if(hsDay>=remindDay):
     wechat_push_text(agent_id=agent_id, access_token=access_token, message=push)
 
 else:
-    return("It's only "+str(hsDay)+" day(s) passed.") #不满足天数时直接输出提醒，不通知。
+    return('Last updated at '+str(lastHs))
