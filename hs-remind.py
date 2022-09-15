@@ -55,7 +55,7 @@ else:
     exit()
 
 #发送微信企业消息
-if((now.date()-lastHs.date()).days==1) and (0<(now-lastHs).seconds<3600):
+if(now.date()==lastHs.date()) and (0<=(now-lastHs).seconds<7200):
     push = '/咖啡生命值已回满！\n--------\n时间：'+str(lastHs)+'\n地点：'+loc
     def get_access_token(corp_id, corp_secret):
         resp = requests.get(f'https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={corp_id}&corpsecret={corp_secret}')
